@@ -2,7 +2,7 @@
     "use strict";
 
     const ajaxUrl = pageVars.url,
-        sec = pageVars.security,
+        sec = pageVars.security;
     
     const hTxtBeg = '<h2 class="pl-2 mb-4 heading-underline">',
         hTxtEnd = '</h2>';
