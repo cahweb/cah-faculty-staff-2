@@ -1,0 +1,25 @@
+{
+  "name": "cah-faculty-staff-2",
+  "version": "2.0.0",
+  "description": "Updated CAH Faculty and Staff plugin",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "page-template",
+    "cah",
+    "ucf"
+  ],
+  "author": "Mike W. Leavitt",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-terser": "^1.2.0"
+  }
+}
