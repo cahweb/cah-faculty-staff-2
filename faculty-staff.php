@@ -7,33 +7,70 @@
  */
 
 /*
- * NOTE: Make sure there is a constant named "DEPT" with the individual department's ID defined in your functions.php file, or use the Options page to set your department (both will work).
+ * NOTE: Make sure there is a constant named "DEPT" with the individual department's ID defined
+ * in your functions.php file, or use the Options page to set your department (both will work).
  */
 
 // Keep people out of the file directly.
-defined( 'ABSPATH' ) or die();
+defined( 'ABSPATH' ) or die( 'No direct access plzthx' );
 
 define( 'CAH_FACULTY_STAFF__PLUGIN_FILE', __FILE__ );
+define( 'CAH_FACULTY_STAFF__PLUGIN_DIR', plugin_dir_path(__FILE__ ) );
+define( 'CAH_FACULTY_STAFF__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-require_once 'includes/cah-faculty-staff-config.php';
+require_once 'includes/config/cah-faculty-staff-config.php';
+require_once 'includes/admin/cah-faculty-staff-admin.php';
+require_once 'includes/cah-faculty-staff-helper.php';
+require_once 'includes/cah-faculty-staff-query-lib.php';
+require_once 'includes/cah-faculty-staff-query-ref.php';
+require_once 'includes/cah-faculty-staff-ajax.php';
 
 use CAH_FacultyStaffConfig as FSConfig;
 
 if( !function_exists( 'cah_faculty_staff_plugin_activate' ) ) {
     function cah_faculty_staff_plugin_activate() {
-        return FSConfig::config();
+        FSConfig::config();
+        flush_rewrite_rules();
     }
 }
 register_activation_hook( CAH_FACULTY_STAFF__PLUGIN_FILE, 'cah_faculty_staff_plugin_activate' );
 
 if( !function_exists( 'cah_faculty_staff_plugin_deactivate' ) ) {
     function cah_faculty_staff_plugin_deactivate() {
-        return FSConfig::deconfig();
+        FSConfig::deconfig();
+        flush_rewrite_rules();
     }
 }
 register_deactivation_hook( CAH_FACULTY_STAFF__PLUGIN_FILE, 'cah_faculty_staff_plugin_deactivate' );
 
 add_action( 'plugins_loaded', function() {
     FSConfig::action_hooks();
+    FSConfig::setup_template();
+
+    if( !defined( 'DEPT' ) ) {
+
+        $dept = get_option( FSConfig::get_opt_prefix() . 'dept' );
+
+        if( $dept === FALSE ) FSConfig::config();
+        else {
+            define( 'DEPT', $dept );
+        }
+    }
 }, 10, 0);
+
+/*
+add_action( 'plugins_loaded', function() {
+    if( !defined( 'DEPT' ) ) {
+
+        $dept = intval( get_option( FSConfig::get_opt_prefix() . 'dept' ) );
+
+        if( $dept ) {
+            define( 'DEPT', $dept );
+
+        } else {
+            wp_die( 'No DEPT constant set.' );
+        }
+    }
+}, 10, 0);
+*/
 ?>

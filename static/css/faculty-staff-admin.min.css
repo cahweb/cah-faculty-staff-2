@@ -1,0 +1,1 @@
+.dept-container{display:flex;justify-content:flex-start;align-items:flex-start;flex-wrap:wrap;background-color:#fff;border:1px solid #e1e1e1;border-radius:10px}.dept-container .dept-item{padding:.5em;margin:0;width:18%}.dept-container .dept-item input[type=radio]{margin:.5em}

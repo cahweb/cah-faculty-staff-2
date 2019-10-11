@@ -1,0 +1,20 @@
+.dept-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(225, 225, 225);
+    border-radius: 10px;
+
+    .dept-item{
+
+        padding: .5em;
+        margin: 0;
+        width: 18%;
+
+        input[type="radio"] {
+            margin: .5em;
+        }
+    }
+}

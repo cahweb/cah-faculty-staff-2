@@ -15,7 +15,6 @@
         const postData = {
             action: 'print_faculty_staff',
             security: sec,
-            dept_id: dept,
             sub_dept: sub,
             id: uId
         };
