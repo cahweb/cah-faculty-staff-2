@@ -47,30 +47,18 @@ add_action( 'plugins_loaded', function() {
     FSConfig::action_hooks();
     FSConfig::setup_template();
 
+    $dept = get_option( FSConfig::get_opt_prefix() . 'dept' );
     if( !defined( 'DEPT' ) ) {
-
-        $dept = get_option( FSConfig::get_opt_prefix() . 'dept' );
 
         if( $dept === FALSE ) FSConfig::config();
         else {
-            define( 'DEPT', $dept );
+            define( 'DEPT', intval( $dept ) );
         }
+
+    } else {
+
+        if( intval( $dept ) != DEPT )
+            update_option( FSConfig::get_opt_prefix() . 'dept', DEPT );
     }
 }, 10, 0);
-
-/*
-add_action( 'plugins_loaded', function() {
-    if( !defined( 'DEPT' ) ) {
-
-        $dept = intval( get_option( FSConfig::get_opt_prefix() . 'dept' ) );
-
-        if( $dept ) {
-            define( 'DEPT', $dept );
-
-        } else {
-            wp_die( 'No DEPT constant set.' );
-        }
-    }
-}, 10, 0);
-*/
 ?>
