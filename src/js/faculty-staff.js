@@ -50,12 +50,12 @@
 
     $(document).ready( $ => {
 
-        $('.nav.flex-column .nav-item:first-child .nav-link').addClass('active');
+        $('#dept-menu-div nav div.collapse .nav.flex-column .nav-item:first-child .nav-link').addClass('active');
         $('#courseTab ul li:first-child a').tab('show');
 
         getStaff();
 
-        $('.nav-link').click( function(e) {
+        $('#dept-menu-div nav div.collapse ul li .nav-link').click( function(e) {
             e.preventDefault();
             $('.nav-link').removeClass('active');
             $(this).addClass('active');
