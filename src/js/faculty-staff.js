@@ -57,7 +57,7 @@
 
         $('#dept-menu-div nav div.collapse ul li .nav-link').click( function(e) {
             e.preventDefault();
-            $('.nav-link').removeClass('active');
+            $('#dept-menu-div nav div.collapse ul li .nav-link').removeClass('active');
             $(this).addClass('active');
             const textClicked = $(this).text();
 

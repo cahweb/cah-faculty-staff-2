@@ -79,11 +79,11 @@ if( !class_exists( 'CAH_FacultyStaffAJAX' ) ) {
             $result = NULL;
 
             // 1 is for Administration
-            if( $sub_dept === 1 )
+            if( $sub_dept === -1 )
                 $result = FSH::query( FSQEnum::DEPT_ADMIN );
             
             // 2 is for Advising
-            else if( $sub_dept === 2 )
+            else if( $sub_dept === -2 )
                 $result = FSH::query( FSQEnum::DEPT_STAFF );
             
             // Any of the department's unique subdepartments
@@ -131,10 +131,54 @@ if( !class_exists( 'CAH_FacultyStaffAJAX' ) ) {
             include_once 'views/cah-faculty-staff-print-staff-detail.php';
 
             // Free up memory
-            mysqli_free_result( $result );
+            //mysqli_free_result( $result );
 
             // Return buffered HTML
             return ob_get_clean();
+        }
+
+
+        private static function _remove_dupes( mysqli_result $result, bool $check_dirs = TRUE ) : array {
+
+            $result_arr = mysqli_fetch_all( $result, MYSQLI_ASSOC );
+
+            $new_arr = array();
+
+            $prev_name = "";
+            $has_chair = FALSE;
+            $has_dir = FALSE;
+
+            foreach( $result_arr as $res ) {
+
+                $current_name = $res['fullname'];
+
+                if( $current_name != $prev_name ) {
+                    array_push( $new_arr, $res );
+                }
+                else if( $check_dirs ) {
+                    $title = !empty( $res['title_dept_short'] ) ? $res['title_dept_short'] : $res['title'];
+
+                    if( !$has_chair && ( $title == 'Department Chair' || $title == 'Chair' ) ) {
+                        array_pop( $new_arr );
+                        array_unshift( $new_arr, $res );
+                        $has_chair = TRUE;
+                    }
+                    else if( !$has_dir && $title == 'Program Director' ) {
+                        array_pop( $new_arr );
+                        if( !$has_chair ) {
+                            array_unshift( $new_arr, $res );
+                        }
+                        else {
+                            array_splice( $new_arr, 1, 0, $res );
+                        }
+                        $has_dir = TRUE;
+                    }
+
+                    if( $has_chair && $has_dir ) $check_dirs = FALSE;
+                }
+            }
+
+            return $new_arr;
         }
     }
 }

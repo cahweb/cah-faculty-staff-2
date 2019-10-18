@@ -9,9 +9,11 @@
 require_once 'dbconfig.php';
 require_once 'cah-faculty-staff-query-lib.php';
 require_once 'cah-faculty-staff-query-ref.php';
+require_once 'config/cah-faculty-staff-config.php';
 
 use CAH_FacultyStaffQueryLib as FSQLib;
 use CAH_FacultyStaffQueryRef as FSQEnum;
+use CAH_FacultyStaffConfig as FSCfg;
 
 if( !class_exists( 'CAH_FacultyStaffHelper' ) ) {
     class CAH_FacultyStaffHelper
@@ -85,6 +87,12 @@ if( !class_exists( 'CAH_FacultyStaffHelper' ) ) {
             // Set the base URL and classes we want every image to have.
             $resize_url = "https://cah.ucf.edu/common/resize.php";
             $classes = array( 'img-circle', 'mr-3' );
+
+            $img_type = get_option( FSCfg::get_opt_prefix() . 'img_type' );
+
+            if( $img_type == 'round-square' ) {
+                array_push( $classes, 'rounded' );
+            }
 
             // Add the extra class for the blank, generic silhouette photo.
             if( $filename == 'profilephoto.jpg' ) array_push( $classes, 'd-flex' );

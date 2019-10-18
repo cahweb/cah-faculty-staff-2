@@ -16,7 +16,7 @@ if( !class_exists( 'CAH_FacultyStaffQueryLib' ) ) {
     class CAH_FacultyStaffQueryLib {
 
         // Member variable to hold Dept number and the base query string.
-        private $dept, $query_base, $excluded_subs;
+        private $dept, $query_base, $excluded_subs, $order_by, $user_query, $case, $advising_case, $gen_query;
 
         // Array of academic advising positions for the "Advising" query section.
         private $advisor_positions = array( 53, 67, 84, 85, 121, 152, 153, 154, 155, 156, 157, 166, 185, 186, 187, 197 );
@@ -38,7 +38,19 @@ if( !class_exists( 'CAH_FacultyStaffQueryLib' ) ) {
             $this->dept = $dept;
 
             // This is the base string for all Department-level requests.
-            $this->query_base = "SELECT u.id AS `id`, u.lname, u.phone, u.photo_path, u.photo_extra, u.email, u.location, u.room_id, u.office, u.interests, u.activities, u.awards, u.research, u.has_cv, u.homepage, u.biography, CONCAT_WS( ' ', u.fname, u.mname, u.lname) AS fullname, t.description AS title, d_s.description, t.title_group, u_d.prog_title_dept AS title_dept, u_d.prog_title_dept_short AS title_dept_short FROM cah.users AS u LEFT JOIN cah.users_departments AS u_d ON u.id = u_d.user_id LEFT JOIN cah.titles AS t ON u_d.title_id = t.id LEFT JOIN cah.departments AS d ON u_d.department_id = d.id LEFT JOIN cah.departments_sub AS d_s ON u_d.subdepartment_id = d_s.id WHERE u_d.department_id = $dept AND u.active = 1 AND u.show_web = 1 AND u_d.affiliation = 'active'";
+            $this->gen_query = "SELECT DISTINCT u.id, u.lname, CONCAT_WS(' ', u.fname, u.mname, u.lname) AS fullname, u.email, u.phone, t.description AS title, u_d.prog_title_dept AS title_dept, u_d.prog_title_dept_short AS title_dept_short, t.title_group AS title_group, u.photo_path, u.photo_extra, u.interests FROM cah.users AS u JOIN cah.users_departments AS u_d ON u.id = u_d.user_id JOIN cah.titles AS t ON u_d.title_id = t.id WHERE u_d.department_id = $this->dept AND u.active = 1 AND u.show_web = 1 AND u_d.affiliation = 'active'";
+
+            // This is the base string for subdepartment-level requests.
+            $this->query_base = "SELECT DISTINCT u.id, u.lname, CONCAT_WS(' ', u.fname, u.mname, u.lname) AS fullname, u.email, u.phone, t.description AS title, u_d.prog_title_dept AS title_dept, u_d.prog_title_dept_short AS title_dept_short, t.title_group AS title_group, u.photo_path, u.photo_extra, u.interests FROM cah.users AS u JOIN cah.users_departments AS u_d ON u.id = u_d.user_id JOIN cah.titles AS t ON u_d.title_id = t.id LEFT JOIN cah.academics AS a ON a.user_id = u.id LEFT JOIN cah.academic_categories AS a_c ON a_c.id = a.academic_id WHERE u.active = 1 AND u.show_web = 1 AND u_d.affiliation = 'active' AND u_d.department_id = $this->dept";
+
+            // This is the base string for user-level requests.
+            $this->user_query = "SELECT u.id, u.lname, u.fname, CONCAT_WS(' ', u.fname, u.mname, u.lname) AS fullname, u.email, u.phone, u.photo_path, u.photo_extra, u.location, u.room_id, u.office, u.interests, u.activities, u.awards, u.research, u.has_cv, u.homepage, u.biography, t.description AS title, t.title_group, u_d.prog_title_dept AS title_dept, u_d.prog_title_dept_short AS title_dept_short FROM cah.users AS u JOIN cah.users_departments AS u_d ON u.id = u_d.user_id JOIN cah.titles AS t ON u_d.title_id = t.id WHERE u_d.department_id = $this->dept AND u.id = ";
+
+            // The case statement that shifts Chairs and Directors to the front of the line.
+            $this->case = " (CASE WHEN title LIKE '%Chair%' THEN 0 WHEN title LIKE '%Director%' THEN 1 WHEN title NOT LIKE '%Chair%' OR title NOT LIKE '%Director%' THEN 2 END)";
+
+            // The case statement that preferences someone's advising title over others.
+            $this->advising_case = " (CASE WHEN title LIKE '%Advis%' THEN 0 WHEN title NOT LIKE '%Advis%' THEN 1 END)";
 
             $excluded_subs = $this->_excluded_subs();
         }
@@ -106,7 +118,6 @@ if( !class_exists( 'CAH_FacultyStaffQueryLib' ) ) {
             }
         }
 
-
         /**
          * The standard query, for displaying the A-Z List entry.
          * 
@@ -118,7 +129,9 @@ if( !class_exists( 'CAH_FacultyStaffQueryLib' ) ) {
          * @return string (anon) | The baseline query string, which pulls everyone in the department.
          */
         private function _dept_all( ... $args ) : string {
-            return $this->query_base . " ORDER BY u.lname";
+            $base = $this->gen_query . " ORDER BY" . $this->case . ", u.lname";
+
+            return "SELECT * FROM ( $base ) AS x GROUP BY x.lname";
         }
 
 
@@ -133,10 +146,9 @@ if( !class_exists( 'CAH_FacultyStaffQueryLib' ) ) {
          * @return string (anon) | The administrative staff query string.
          */
         private function _dept_admin( ... $args ) : string {
-            $sql = $this->query_base . " AND t.title_group IN( 'Administrative Faculty' ) ORDER BY u.lname";
+            $base = $this->gen_query . " AND t.title_group IN( 'Administrative Faculty', 'Chair', 'Staff' ) ORDER BY $this->case, u.lname";
 
-            // Here we filter the results as normal, but then reshuffle them so the Dean's List candidates ar first.
-            return "SELECT * FROM ( $sql ) AS NSCM_Admin ORDER BY (CASE WHEN title = 'Director' THEN 0 WHEN title != 'Director' THEN 1 END)";
+            return "SELECT * FROM ( $base ) AS x GROUP BY $this->case, x.lname";
         }
 
 
@@ -151,7 +163,9 @@ if( !class_exists( 'CAH_FacultyStaffQueryLib' ) ) {
          * @return string (anon) | The Advising staff query string.
          */
         private function _dept_staff( ... $args ) : string {
-            return $this->query_base . " AND u_d.title_id IN( " . implode( ", ", $this->advisor_positions ) . " ) ORDER BY u.lname";
+            $base = $this->gen_query . " AND (u_d.title_id IN( " . implode( ", ", $this->advisor_positions ) . " ) OR t.description LIKE '%Advis%') ORDER BY $this->advising_case, u.lname";
+
+            return "SELECT * FROM ( $base ) AS x GROUP BY x.lname";
         }
 
 
@@ -167,7 +181,9 @@ if( !class_exists( 'CAH_FacultyStaffQueryLib' ) ) {
          * @return string (anon) | The query screen for any other subdepartment.
          */
         private function _dept_sub_general( int $sub_dept, ... $args ) : string {
-            return $this->query_base . " AND u_d.subdepartment_id = $sub_dept ORDER BY u.lname";
+            $base = $this->query_base . " AND a.academic_id = $sub_dept ORDER BY $this->case, u.lname";
+
+            return "SELECT * FROM ( $base ) AS x GROUP BY x.lname ORDER BY $this->case";
         }
 
 
@@ -180,7 +196,7 @@ if( !class_exists( 'CAH_FacultyStaffQueryLib' ) ) {
          * @param int $user_id | The user's User ID, so we can access their entry quickly.
          */
         private function _dept_user( int $user_id, ... $args ) : string {
-            return $this->query_base . " AND u.id = $user_id LIMIT 1";
+            return $this->user_query . $user_id . " LIMIT 1";
         }
 
 
@@ -287,7 +303,7 @@ if( !class_exists( 'CAH_FacultyStaffQueryLib' ) ) {
 
         private function _dept_sub_categories( ... $args ) {
 
-            return "SELECT id, short_description, `description` FROM cah.departments_sub AS d_s WHERE department_id = $this->dept ORDER BY short_description";
+            return "SELECT id, `description` FROM cah.academic_categories AS a_c WHERE department_id = $this->dept ORDER BY `description`";
         }
 
 

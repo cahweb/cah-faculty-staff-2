@@ -17,7 +17,8 @@ if( !class_exists( 'CAH_FacultyStaffConfig' ) ) {
         private static $option_prefix = "cah_faculty_staff_";
         private static $option_defaults = array(
                 'dept' => 11,
-                'interests' => 1
+                'interests' => 1,
+                'img_type' => 'circle'
             );
 
         private function __construct() {}
@@ -127,6 +128,7 @@ if( !class_exists( 'CAH_FacultyStaffConfig' ) ) {
             $defaults = self::$option_defaults;
             add_option( self::$option_prefix . 'dept', $defaults['dept'] );
             add_option( self::$option_prefix . 'interests', $defaults['interests'] );
+            add_option( self::$option_prefix . 'img_type', $defaults['img_type'] );
         }
 
         public static function deconfig() {
@@ -137,6 +139,7 @@ if( !class_exists( 'CAH_FacultyStaffConfig' ) ) {
 
             delete_option( self::$option_prefix . 'dept' );
             delete_option( self::$option_prefix . 'interests' );
+            delete_option( self::$option_prefix . 'img_type' );
         }
 
         /**

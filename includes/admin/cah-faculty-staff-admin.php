@@ -61,35 +61,21 @@ if( !class_exists( 'CAH_FacultyStaffAdmin' ) ) {
         }
 
 
+        public static function build_img_select() {
+
+            ob_start();
+
+            include_once CAH_FACULTY_STAFF__PLUGIN_DIR . 'includes/views/cah-faculty-staff-img-select.php';
+
+            echo ob_get_clean();
+        }
+
+
         public static function load_style() {
 
             if( !is_admin() ) return;
 
             wp_enqueue_style( 'faculty-staff-admin-css', CAH_FACULTY_STAFF__PLUGIN_URL . 'static/css/faculty-staff-admin.min.css' );
-        }
-
-
-        public static function update_options() {
-
-            if( !isset( $_POST['update_options'] ) || !wp_verify_nonce( $_POST['update_options'], 'faculty_staff_update_options' ) )
-                wp_die( "Could not verify your nonce." );
-
-            if( isset( $_POST['department'] ) ) {
-                update_option( FSCfg::get_opt_prefix() . 'dept', intval( $_POST['department'] ) );
-            }
-
-            if( isset( $_POST['show-interests'] ) ) {
-                update_option( FSCfg::get_opt_prefix() . 'interests', intval( $_POST['show-interests'] ) );
-            }
-
-            $get_vars = "?success=1";
-
-            $base_url = menu_page_url( 'cah-faculty-staff-options' );
-
-            if( wp_redirect( $base_url . $get_vars ) )
-                exit();
-            else
-                die();
         }
 
 
@@ -120,6 +106,7 @@ if( !class_exists( 'CAH_FacultyStaffAdmin' ) ) {
 
             register_setting( 'cah_faculty_staff', FSCfg::get_opt_prefix() . "dept" );
             register_setting( 'cah_faculty_staff', FSCfg::get_opt_prefix() . "interests" );
+            register_setting( 'cah_faculty_staff', FSCfg::get_opt_prefix() . "img_type" );
 
             add_settings_section(
                 'cah_faculty_staff_options_main',
@@ -140,6 +127,14 @@ if( !class_exists( 'CAH_FacultyStaffAdmin' ) ) {
                 FSCfg::get_opt_prefix() . "interests",
                 "Display Interests ",
                 array( __CLASS__, 'build_interest_checkbox' ),
+                'cah-faculty-staff-options',
+                'cah_faculty_staff_options_main'
+            );
+
+            add_settings_field(
+                FSCfg::get_opt_prefix() . "img_type",
+                "Headshot Image Shape ",
+                array( __CLASS__, 'build_img_select' ),
                 'cah-faculty-staff-options',
                 'cah_faculty_staff_options_main'
             );

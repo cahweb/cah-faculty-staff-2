@@ -17,6 +17,6 @@ $show_interests = intval( get_option( FSConfig::get_opt_prefix() . 'interests' )
     name="<?= FSConfig::get_opt_prefix() . "interests" ?>" 
     id="show-interests" 
     value="1" 
-    <?= $show_interests ? "checked" : "" ?>
+    <?= $show_interests ? " checked" : "" ?>
 >
 

@@ -4,7 +4,11 @@ require_once CAH_FACULTY_STAFF__PLUGIN_DIR . 'includes/cah-faculty-staff-helper.
 use CAH_FacultyStaffHelper as FSH;
 ?>
 <div class="row">
+<?php
+
+?>
 <?php while( $row = mysqli_fetch_assoc( $result ) ) : // Iterate through entries ?>
+<?php //foreach( $result as $row ) : ?>
     <div class="col-lg-6 col-md-12">
         <div class="cah-staff-list">
             <a href="<?= home_url( 'faculty-staff' ) ?>?id=<?= $row['id'] ?>">
@@ -19,9 +23,10 @@ use CAH_FacultyStaffHelper as FSH;
                         <div class="media-body">
                 <?php endif; // We'll show the name regardless ?>
                         <strong><?= $row['fullname'] ?></strong>
+                        <br />
                 <?php
                     // Get the user's title
-                    $title = isset( $row['title_dept_short'] ) ? $row['title_dept_short'] : $row['title'];
+                    $title = !empty( $row['title_dept_short'] ) || !empty( $row['title_dept'] ) ? ( !empty( $row['title_dept_short'] ) ? $row['title_dept_short'] : $row['title_dept'] ) : $row['title'];
 
                     // Back to non-A-Z List stuff.
                     if( $format ) :
@@ -66,5 +71,6 @@ use CAH_FacultyStaffHelper as FSH;
             </a>
         </div>
     </div>
+<?php //endforeach; ?>
 <?php endwhile; ?>
 </div>

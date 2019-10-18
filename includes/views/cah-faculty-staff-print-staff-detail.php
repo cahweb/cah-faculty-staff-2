@@ -53,7 +53,7 @@ use CAH_FacultyStaffQueryRef as FSQEnum;
         </div>
     </div>
 <?php if( !empty( $row['biography'] ) ) : ?>
-    <div class="pt-2">
+    <div class="pt-2 mw-100 mb-3">
         <?= $row['biography'] ?>
     </div>
 <?php endif; ?>

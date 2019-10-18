@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: CAH Faculty and Staff Plugin (Newer)
+ * Plugin Name: CAH Faculty and Staff Plugin
  * Description: A plugin to provide a page template, functionality, and styling for dynamic, responsive Faculty and Staff pages in the CAH family of sites. Based in part on code by Mannong Pang.
  * Author: Mike W. Leavitt
  * Version: 2.0.0

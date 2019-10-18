@@ -33,12 +33,12 @@ get_header();
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="1">
+                                <a class="nav-link" id="-1">
                                     <p>Administration</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="2">
+                                <a class="nav-link" id="-2">
                                     <p>Advising</p>
                                 </a>
                             </li>
@@ -47,7 +47,7 @@ get_header();
                                 while( $row = mysqli_fetch_assoc( $result ) ) {
                                     if( stripos( $row[ 'description' ], "Advising" ) ) continue;
 
-                                    $desc = strlen( $row['description'] ) <= 30 ? $row['description'] : $row['short_description'];
+                                    $desc = $row['description'];
                                     ?>
                                     <li class="nav-item">
                                         <a class="nav-link" id="<?= intval( $row['id'] ) ?>">
