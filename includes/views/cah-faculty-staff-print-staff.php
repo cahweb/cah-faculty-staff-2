@@ -22,7 +22,7 @@ use CAH_FacultyStaffHelper as FSH;
                         5 ); // Grab the staff image, if available. ?>
                         <div class="media-body">
                 <?php endif; // We'll show the name regardless ?>
-                        <strong><?= $row['fullname'] ?></strong>
+                        <p><strong><?= $row['fullname'] ?></strong></p>
                         <br />
                 <?php
                     // Get the user's title
