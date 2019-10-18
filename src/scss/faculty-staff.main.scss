@@ -54,12 +54,16 @@
             line-height: 16px;
         }
 
+        p {
+            margin-bottom: .5em;
+        }
+
         .media {
             .media-body {
                 line-height: 1.2;
 
                 p {
-                    margin-bottom: .6em;
+                    margin-bottom: .5em;
                 }
 
                 .fs-list {
@@ -67,7 +71,7 @@
                     line-height: 18px;
 
                     p {
-                        margin-bottom: .5em;
+                        margin-bottom: .4em;
                     }
 
                     .staff-title {
