@@ -20,6 +20,13 @@
         object-position: 0 0;
         border-radius: 50%;
     }
+
+    .img-circle.rounded {
+        object-position: 50% 0;
+        height: 105px;
+        width: 105px;
+        border-radius: .25rem;
+    }
 }
 
 .cah-staff-list {
