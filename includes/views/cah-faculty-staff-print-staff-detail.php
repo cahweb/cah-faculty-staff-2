@@ -52,51 +52,57 @@ use CAH_FacultyStaffQueryRef as FSQEnum;
         <?php endif; ?>
         </div>
     </div>
-<?php if( !empty( $row['biography'] ) ) : ?>
-    <div class="pt-2 mw-100 mb-3">
-        <?= $row['biography'] ?>
+    <div class="staff-info">
+    <?php if( !empty( $row['biography'] ) ) : ?>
+        <div class="pt-2 mw-100 mb-3">
+            <?= $row['biography'] ?>
+        </div>
+    <?php endif; ?>
+    <?php if( ( $edu = FSH::query( FSQEnum::USER_EDU, intval( $row['id'] ) ) ) && $edu->num_rows > 0 ) : ?>
+        <h3 class="heading-underline">Education</h3>
+            <ul>
+        <?php while( $edu_row = mysqli_fetch_assoc( $edu ) ) : ?>
+                <li>
+                    <?= trim( $edu_row['short_description'] ) 
+                        . ( !empty( $edu_row['field'] ) ? " in " . trim( $edu_row['field'] ) : "" )
+                        . ( !empty( $edu_row['institution'] ) ? " from " . trim($edu_row['institution'] ) : "" )
+                        . ( !empty( $edu_row['year'] ) ? " ({$edu_row['year']})" : "" )
+                    ?>
+                </li>
+        <?php endwhile; ?>
+            </ul>
+    <?php endif; ?>
+    <?= isset( $row['interests'] ) ? FSH::maybe_print( $row['interests'], "Research Interests" ) : "" ?>
+    <?= isset( $row['research'] ) ? FSH::maybe_print( $row['research'], "Recent Research Activities" ) : "" ?>
+    <?php if( ( $pubs = FSH::query( FSQEnum::USER_PUB, intval( $row['id'], TRUE ) ) ) && $pubs->num_rows > 0 ) : ?>
+        <h3 class="heading-underline">Selected Publications</h3>
+        <?php 
+        $pub_type = "";
+        $i = 0;
+        while( $pub_row = mysqli_fetch_assoc( $pubs ) ) : ?>
+        <?php if( $i != 0 && strcmp( $pub_type, $pub_row['pubtype'] ) ) : ?>
+            <ul>
+        <?php endif; ?>
+        <?php if( strcmp( $pub_type, $pub_row['pubtype'] ) ) : ?>
+        <h4 class="pt-4"><?= $pub_row['pubtype'] ?></h4>
+            <ul>
+        <?php endif; ?>
+                <li>
+                    <?= ( $pub_row['forthcoming'] ? "<em>Forthcoming</em> " : "" )
+                        . $pub_row['publish_date'] . " "
+                        . html_entity_decode( $pub_row['citation'], ENT_QUOTES, "utf-8" )
+                    ?>
+                </li>
+        <?php 
+            $i++;
+            $pub_type = $pub_row['pubtype'];
+        ?>
+        <?php endwhile; ?>
+            </ul>
+    <?php endif; ?>
+    <?php if( $courseHTML = FSH::get_course_list( intval( $row['id'] ) ) ) : ?>
+        <h3 class="heading-underline">Courses</h3>
+        <?= $courseHTML ?>
+    <?php endif; ?>
     </div>
-<?php endif; ?>
-<?php if( ( $edu = FSH::query( FSQEnum::USER_EDU, intval( $row['id'] ) ) ) && $edu->num_rows > 0 ) : ?>
-    <h3 class="heading-underline">Education</h3>
-        <ul>
-    <?php while( $edu_row = mysqli_fetch_assoc( $edu ) ) : ?>
-            <li>
-                <?= trim( $edu_row['short_description'] ) 
-                    . ( !empty( $edu_row['field'] ) ? " in " . trim( $edu_row['field'] ) : "" )
-                    . ( !empty( $edu_row['institution'] ) ? " from " . trim($edu_row['institution'] ) : "" )
-                    . ( !empty( $edu_row['year'] ) ? " ({$edu_row['year']})" : "" )
-                ?>
-            </li>
-    <?php endwhile; ?>
-        </ul>
-<?php endif; ?>
-<?= isset( $row['interests'] ) ? FSH::maybe_print( $row['interests'], "Research Interests" ) : "" ?>
-<?= isset( $row['research'] ) ? FSH::maybe_print( $row['research'], "Recent Research Activities" ) : "" ?>
-<?php if( ( $pubs = FSH::query( FSQEnum::USER_PUB, intval( $row['id'], TRUE ) ) ) && $pubs->num_rows > 0 ) : ?>
-    <h3 class="heading-underline">Selected Publications</h3>
-    <?php 
-    $pub_type = "";
-    $i = 0;
-    while( $pub_row = mysqli_fetch_assoc( $pubs ) ) : ?>
-    <?php if( $i != 0 && strcmp( $pub_type, $pub_row['pubtype'] ) ) : ?>
-        <ul>
-    <?php endif; ?>
-    <?php if( strcmp( $pub_type, $pub_row['pubtype'] ) ) : ?>
-    <h4 class="pt-4"><?= $pub_row['pubtype'] ?></h4>
-        <ul>
-    <?php endif; ?>
-            <li>
-                <?= ( $pub_row['forthcoming'] ? "<em>Forthcoming</em> " : "" )
-                    . $pub_row['publish_date'] . " "
-                    . html_entity_decode( $pub_row['citation'], ENT_QUOTES, "utf-8" )
-                ?>
-            </li>
-    <?php 
-        $i++;
-        $pub_type = $pub_row['pubtype'];
-    ?>
-    <?php endwhile; ?>
-        </ul>
-<?php endif; ?>
 </div>
