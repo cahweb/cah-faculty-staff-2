@@ -53,6 +53,21 @@
             margin-top: .3em;
             line-height: 16px;
         }
+
+        .media {
+            .media-body {
+                line-height: 1.2;
+
+                .fs-list {
+                    font-size: 90%;
+                    line-height: 18px;
+
+                    .staff-title {
+                        line-height: 16px;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -84,9 +99,4 @@
             }
         }
     }
-}
-
-.fs-list {
-    font-size: 90%;
-    line-height: 18px;
 }
