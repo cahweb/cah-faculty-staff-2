@@ -23,7 +23,6 @@ use CAH_FacultyStaffHelper as FSH;
                         <div class="media-body">
                 <?php endif; // We'll show the name regardless ?>
                         <p><strong><?= $row['fullname'] ?></strong></p>
-                        <br />
                 <?php
                     // Get the user's title
                     $title = !empty( $row['title_dept_short'] ) || !empty( $row['title_dept'] ) ? ( !empty( $row['title_dept_short'] ) ? $row['title_dept_short'] : $row['title_dept'] ) : $row['title'];
