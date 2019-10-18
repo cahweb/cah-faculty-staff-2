@@ -57,7 +57,7 @@ use CAH_FacultyStaffHelper as FSH;
                         </div>
                 <?php else : ?>
                     <small>
-                        <span class="staff-title"><em><?= $title ?></em></span><br />
+                        <p class="staff-title"><em><?= $title ?></em></p>
                         <?= $row['email'] ?><br />
                         <?= isset( $row['phone'] ) ? FSH::format_phone_us( $row['phone'] ) : "" ?>
                     </small>
