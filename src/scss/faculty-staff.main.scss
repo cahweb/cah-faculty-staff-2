@@ -59,13 +59,17 @@
                 line-height: 1.2;
 
                 p {
-                    margin-bottom: 3em;
+                    margin-bottom: 2em;
                 }
 
                 .fs-list {
                     font-size: 90%;
                     line-height: 18px;
 
+                    p {
+                        margin-bottom: 1em;
+                    }
+                    
                     .staff-title {
                         line-height: 16px;
                     }
