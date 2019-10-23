@@ -178,7 +178,7 @@ if( !class_exists( 'CAH_FacultyStaffConfig' ) ) {
             wp_enqueue_style( 'faculty-staff-style', CAH_FACULTY_STAFF__PLUGIN_URL .'static/css/faculty-staff.min.css' );
 
             // Load our JS. Come on, you know how this works by now... :P
-            wp_enqueue_script( 'faculty-staff-script', CAH_FACULTY_STAFF__PLUGIN_URL . 'static/js/faculty-staff.min.js', array( 'jquery', 'script' ), '1.0.0', TRUE );
+            wp_enqueue_script( 'faculty-staff-script', CAH_FACULTY_STAFF__PLUGIN_URL . 'static/js/faculty-staff.min.js', array( 'jquery', 'script' ), '1.0.1', TRUE );
 
             // Stuff to pass to our page's JavaScript. The "security" field is a nonce
             // we're creating to make sure it's still the user making requests on the
