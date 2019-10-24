@@ -10,6 +10,8 @@
     // Setting prefabs for boilerplate HTML
     const hTxtBeg = '<h2 class="pl-2 mb-4 heading-underline">',
         hTxtEnd = '</h2>';
+
+    const loadingDiv = $('<div></div>').attr({id: "loading-gif", class: "mt-5"});
     
     
     /**
@@ -33,6 +35,8 @@
             sub_dept: sub,
             id: uId
         };
+
+        $('#cah-faculty-staff').html('').append(loadingDiv);
 
         // The AJAX request.
         $.ajax({
